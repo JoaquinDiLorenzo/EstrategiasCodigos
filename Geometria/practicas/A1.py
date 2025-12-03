@@ -1,28 +1,45 @@
-import math
+import sys
 
-from utils.PUNTO import Punto
-from utils.VECTORES import dist2
-
-def closest_points(puntos):
-    n = len(puntos)
-    min_d2 = float('inf') #Saco el valor inf de float
-
-    for i in range(n):
-        for j in range(i+1,n):
-            # Saco el dist2(sin raiz), ya que solo neceisto comparar disntancias
-            d2 = dist2(puntos[i],puntos[j]) 
-            if d2 < min_d2:
-                min_d2 = d2
+class Punto:
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+        
+    def __add__(self, other):
+        return Punto(self.x + other.x, self.y + other.y)
     
-    return math.sqrt(min_d2) # Para devolver la disntacia real, debo aplicar la raiz cuadrada.
+    def __sub__(self, other):
+        return Punto(self.x - other.x, self.y - other.y)
+    
+    def __mul__(self, escalar: float):
+        return Punto(self.x * escalar, self.y * escalar)
+    
+    def __dot__(self, other):
+        return self.x * other.x + self.y * other.y
+    
+    def __xor__(self, other):
+        return self.x * other.y - self.y * other.x
+    
+    def mod(self) -> float: # distancia entre dos puntos
+        return (self.x**2 + self.y**2)**0.5
 
-N = int(input())
-puntos = []
+n = int(sys.stdin.readline())
 
-for _ in range(N):
-    x,y = map(float, input().split())
-    puntos.append(Punto(x,y))
+points = []
 
-dist = closest_points(puntos)
+for _ in range(n):
+    x, y = map(int, sys.stdin.readline().split())
+    points.append(Punto(x, y))
 
-print(f"{dist:.10f}") #Imprimo el numero y sus 10 decimales.
+best = float('inf') # se inicializa el mejor en infinito
+
+# se pide la menor distancia entre puntos, por lo que:
+# se necesita restar los dos puntos para obtener el vector entre dos puntos (resta)
+# y se necesita computar la distancia (mod())
+for i in range(n):
+    for j in range(i+1, n):
+        d = (points[i] - points[j]).mod()
+        if d < best:
+            best = d
+
+sys.stdout.write(f"{best:.10f}")
