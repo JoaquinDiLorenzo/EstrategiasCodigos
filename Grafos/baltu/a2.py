@@ -1,6 +1,4 @@
-# DSU SIN PATH COMPRESSION
-# Complejidad: O(n) para n uniones en el peor caso
-# Memoria: O(n)
+import sys
 
 class DSU:
     def __init__(self, n):
@@ -23,3 +21,21 @@ class DSU:
             self.link[y] = x
             self.sz[x] += self.sz[y]
         return self.sz[x]
+
+n, m = map(int, sys.stdin.readline().split())
+
+# se pide inicializar el grafo sin rutas, e irlas agregando de a poco
+# se tiene que usar el DSU para ir haciendo joins
+graph = DSU(n)
+
+components = n # numero de componentes conexas (al principio N)
+size = 1 # tamaño inicial (al prinicpio 1)
+
+for _ in range(m):
+    a, b = map(int, sys.stdin.readline().split())
+
+    if graph.getLink(a-1) != graph.getLink(b-1): # se construye una ruta entre nodos desconectados (1-indexado)
+        components -= 1 # se reduce el num de componentes porque ahora son conexos
+
+    size = max(size, graph.union(a-1, b-1)) # actualizo el size
+    sys.stdout.write(f"{components} {size}\n") # cantidad de componentes y tamaño max de ese dia

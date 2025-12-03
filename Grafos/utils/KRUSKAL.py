@@ -1,57 +1,108 @@
-# ============================================================
-# DSU (Disjoint Set Union) / Union-Find
-# Sirve para:
-#   - Manejar componentes que se van uniendo.
-#   - Saber si dos nodos están en el mismo conjunto.
-#   - Lo usamos en Kruskal para evitar ciclos.
-# ============================================================
-
 class DSU:
+    """
+    Estructura Disjoint Set Union (Union-Find) con compresión de caminos
+    y unión por tamaño. Permite mantener particiones dinámicas de un conjunto
+    de vértices y consultar rápidamente si dos vértices pertenecen a la misma
+    componente conexa.
+
+    Este DSU está optimizado para usarse en el algoritmo de Kruskal:  
+    - getLink(x) aplica path compression, logrando casi O(1) amortizado.  
+    - union(x, y) aplica union-by-size para mantener árboles planos.
+
+    Parámetros:
+        n (int): cantidad de nodos (0 .. n-1)
+
+    Atributos:
+        link (List[int]): link[i] es el padre de i en el bosque de conjuntos.
+                          Si link[i] == i, entonces i es representante (root).
+        sz   (List[int]): tamaño del conjunto cuya raíz es cada nodo.
+    """
+
     def __init__(self, n):
-        self.parent = list(range(n))
-        self.sz = [1] * n
+        self.link = [0] * n       # Padre de cada nodo
+        self.sz = [1] * n         # Tamaño de cada conjunto
+        for i in range(n):
+            self.link[i] = i      # Cada nodo arranca como su propio padre
 
-    def find(self, x):
-        if self.parent[x] != x:
-            self.parent[x] = self.find(self.parent[x])  # path compression
-        return self.parent[x]
+    def getLink(self, x):
+        """
+        Encuentra la raíz (representante) del conjunto al que pertenece x.
+        Utiliza *path compression*, que aplana el árbol de padres y permite
+        futuras búsquedas prácticamente O(1).
 
-    def union(self, a, b):
-        a = self.find(a)
-        b = self.find(b)
-        if a != b:
-            if self.sz[a] < self.sz[b]:
-                a, b = b, a
-            self.parent[b] = a
-            self.sz[a] += self.sz[b]
-            return True   # se unieron dos componentes distintas
-        return False       # ya estaban en el mismo conjunto
+        Retorna:
+            int: representante del conjunto de x.
+        """
+        if self.link[x] != x:
+            self.link[x] = self.getLink(self.link[x])  # Path compression
+        return self.link[x]
 
-# ============================================================
-# KRUSKAL: Árbol de expansión mínima (MST)
-#
-# PARA QUÉ SIRVE:
-#   - Encontrar el costo mínimo para conectar TODOS los nodos
-#     de un grafo NO DIRIGIDO con pesos.
-#
-# CÓMO SE USA:
-#   1) Tener una lista de aristas: edges = [(costo, u, v), ...]
-#      * u y v en 0-based (0..n-1)
-#   2) Llamar:
-#         total_cost, used_edges = kruskal(n, edges)
-#   3) Si used_edges != n-1 -> grafo no conectable -> "IMPOSSIBLE"
-#      Si used_edges == n-1 -> total_cost es el costo mínimo del MST
-# ============================================================
+    def union(self, x, y):
+        """
+        Une los conjuntos que contienen a x y a y, si son distintos.
+        Implementa *union by size*: la raíz con mayor tamaño absorbe a la otra,
+        manteniendo árboles más bajos y eficientes.
+
+        Parámetros:
+            x (int), y (int): nodos a unir.
+
+        Retorna:
+            bool: True si se unieron dos componentes diferentes.
+                  False si ya estaban en el mismo conjunto.
+        """
+        x = self.getLink(x)
+        y = self.getLink(y)
+        if x != y:
+            if self.sz[x] < self.sz[y]:
+                x, y = y, x        # Garantiza que x sea la raíz más grande
+            self.link[y] = x       # y pasa a depender de x
+            self.sz[x] += self.sz[y]
+            return True
+        return False
+
+
 
 def kruskal(n, edges):
-    # edges: lista de tuplas (costo, u, v)
-    edges.sort()          # ordenar por costo creciente
+    """
+    Implementación general del algoritmo de Kruskal para hallar un
+    Árbol de Expansión Mínima (MST) en un grafo no dirigido ponderado.
+
+    Requisitos:
+        - El grafo puede estar desconectado; Kruskal encontrará un MST
+          si el grafo es conexo, o un bosque generador mínimo si no lo es.
+        - Las aristas deben venir como tuplas (costo, u, v),
+          donde u y v son nodos 0-indexados.
+
+    Parámetros:
+        n (int): cantidad de nodos del grafo.
+        edges (List[Tuple[int,int,int]]): lista de aristas en formato
+                                          (costo, u, v).
+
+    Proceso:
+        1. Ordena todas las aristas por costo creciente.
+        2. Inicializa un DSU con n conjuntos (uno por nodo).
+        3. Recorre las aristas en orden creciente:
+            - Si u y v están en distintas componentes, se agrega la arista
+              al MST y se unen ambas componentes en el DSU.
+        4. La suma de los costos seleccionados da el costo total del MST.
+
+    Retorna:
+        (total_cost, used_edges):
+            total_cost (int): costo total del MST.
+            used_edges (int): cantidad de aristas incorporadas al MST.
+                              Para un grafo conexo debe ser n-1.
+    """
+
+    # Ordenación por costo creciente
+    edges.sort()
+
     dsu = DSU(n)
     total_cost = 0
     used_edges = 0
 
     for cost, u, v in edges:
-        if dsu.union(u, v):           # une si estaban en componentes distintas
+        # Si une componentes distintas, pertenece al MST
+        if dsu.union(u, v):
             total_cost += cost
             used_edges += 1
 
