@@ -35,7 +35,6 @@ class Primos:
         return True
     
 MAX = 10 ** 6
-
 prim = Primos(MAX)
 
 def contar_primos_distintos(x):
@@ -54,3 +53,9 @@ def contar_primos_distintos(x):
         cnt += 1
 
     return cnt
+
+n = int(input())
+
+for _ in range(n):
+    number = int(input())
+    print(contar_primos_distintos(number))
