@@ -1,8 +1,5 @@
-# Como no podemos hacer la criba de 10 ^ 12, lo qu ehacemos es hacerla de 10 ^ 6 (aplicandole raiz cuadrada a 12)
-# El codiog funcion igual por la siguiente regla matemtica -> Si ningún primo hasta Sqrt(x) divide a X, entonces forzosamente X es primo.
-
 class Primos:
-    
+
     def __init__(self, n):
         self.lista_primos = []  # lista de números primos
         self.min_primo = []  # menor primo que divide a i
@@ -37,15 +34,23 @@ class Primos:
                 return False
         return True
     
-MAX = 10**6
+MAX = 10 ** 6
 
 prim = Primos(MAX)
 
-n = int(input())
+def contar_primos_distintos(x):
+    cnt = 0
+    tmp = x
 
-for _ in range(n):
-    t = int(input())
-    num = t+1
-    while not prim.test_primalidad(num):
-        num += 1
-    print(num)
+    for p in prim.lista_primos:
+        if p * p > tmp:
+            break
+        if tmp % p == 0:
+            cnt += 1
+            while tmp % p == 0:
+                tmp //= p
+
+    if tmp > 1:
+        cnt += 1
+
+    return cnt
