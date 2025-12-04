@@ -59,3 +59,16 @@ n = int(input())
 for _ in range(n):
     number = int(input())
     print(contar_primos_distintos(number))
+
+'''
+La función contar_primos_distintos(x) calcula cuántos factores primos distintos tiene un número.
+Para hacerlo usa la lista de primos generada por la criba:
+
+Recorre los primos p y se detiene cuando p² > x, porque si queda algún resto mayor que 1, ese resto es primo.
+
+Para cada primo p, si p divide a x, lo cuenta una sola vez (factor primo distinto) y elimina todas sus copias dividiendo repetidamente.
+
+Al final, si el número reducido quedó mayor que 1, significa que es un primo grande y se suma un factor más.
+
+Este método permite factorizar números hasta 10¹² usando solo los primos precomputados hasta 10⁶.
+'''
