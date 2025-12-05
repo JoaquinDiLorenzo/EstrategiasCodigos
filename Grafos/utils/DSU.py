@@ -1,25 +1,41 @@
-# DSU SIN PATH COMPRESSION
-# Complejidad: O(n) para n uniones en el peor caso
-# Memoria: O(n)
+# ================================================================
+# DSU (Disjoint Set Union) / Union-Find
+#
+# PARA QUÉ SIRVE:
+#   - Maneja GRUPOS de nodos que se van uniendo con el tiempo.
+#   - Responde: "¿Estos dos nodos están en el MISMO grupo?"
+#   - No sirve para obtener caminos. Solo sirve para conectividad.
+#
+# CUÁNDO USARLO:
+#   - Muchos "UNIR a b" y "PREGUNTAR si a y b están conectados".
+#   - Kruskal (Minimum Spanning Tree).
+#
+# CÓMO USARLO: (SIEMPRE ANTES HACER a-=1 y b-=1)
+#   dsu = DSU(n)                 # inicializar con n nodos
+#   dsu.union(a, b)              # unir los conjuntos donde están a y b
+#   dsu.find(x)                  # obtener el representante del grupo
+#   dsu.find(a) == dsu.find(b)   # True si están en el mismo grupo
+#   dsu.size(x)                  # tamaño del grupo de x
+# ================================================================
 
 class DSU:
     def __init__(self, n):
-        self.link = [0] * n # Padre de cada nodo
-        self.sz = [1] * n # Tamaño de cada componente
-        for i in range(n):
-            self.link[i] = i # Cada nodo es su propio padre
-            
-    def getLink(self, x):
-        if self.link[x] != x: # Si no es su propio padre
-            self.link[x] = self.getLink(self.link[x]) # Path compression
-        return self.link[x]
-            
-    def union(self, x, y):
-        x = self.getLink(x)
-        y = self.getLink(y)
-        if x != y: # Si no estan en la misma componente
-            if self.sz[x] < self.sz[y]:
-                x,y = y,x # Asegurarse de que x es la componente mas grande
-            self.link[y] = x
-            self.sz[x] += self.sz[y]
-        return self.sz[x]
+        self.parent = list(range(n))
+        self.sz = [1] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  # path compression
+        return self.parent[x]
+
+    def union(self, a, b):
+        a = self.find(a)
+        b = self.find(b)
+        if a != b:
+            if self.sz[a] < self.sz[b]:
+                a, b = b, a
+            self.parent[b] = a
+            self.sz[a] += self.sz[b]
+
+    def size(self, x):
+        return self.sz[self.find(x)]
