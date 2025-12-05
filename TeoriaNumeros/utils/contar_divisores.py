@@ -205,3 +205,15 @@ def contar_divisores(x):
         total *= (exp + 1)
     return total
 
+
+'''
+Funcion para obtener el sigueinte primo
+'''
+def proximo_primo(num):
+    num += 1
+    while not prim.test_primalidad(num):
+        num += 1
+    return num
+
+# Como no podemos hacer la criba de 10 ^ 12, lo que hacemos es hacerla de 10 ^ 6 (aplicandole raiz cuadrada a 12)
+# El codigo funciona igual por la siguiente regla matematica -> Si ningún primo hasta Sqrt(x) divide a X, entonces forzosamente X es primo.
