@@ -1,92 +1,128 @@
 class MergeSort:
     """
-    Implementa merge sort para:
-    - Ordenar una lista de números.
-    - Contar la cantidad de inversiones del arreglo original.
+    MERGE SORT GENÉRICO + CONTADOR DE INVERSIONES
 
-    Definición:
-        Una inversión es un par (i, j) tal que:
-            - i < j
-            - lista[i] > lista[j]
+    ¿Qué hace esta plantilla?
+    - Ordena un array en O(n log n).
+    - Cuenta la cantidad de inversiones (pares i<j con a[i] > a[j]).
+    - Te deja un lugar clarísimo para agregar lógica extra de
+      Divide & Conquer basada en "comparar mitad izquierda vs derecha".
 
-    Uso típico (problema "contar inversiones"):
+    USO TÍPICO 1: solo ordenar
         ms = MergeSort()
-        ms.sort(a)          # ordena 'a' in-place
-        print(ms.inv)       # cantidad total de inversiones
+        ms.sort(a)
+        # ahora 'a' está ordenada
 
-    Complejidad:
-        Tiempo:  O(n log n)
-        Memoria: O(n) (por las listas temporales left/right)
+    USO TÍPICO 2: contar inversiones
+        ms = MergeSort()
+        ms.sort(a)
+        print(ms.inv)   # cantidad total de inversiones en el array original
+
+    USO TÍPICO 3: adaptar a otros problemas
+        - Editar la sección marcada como "ZONA CUSTOM" dentro de _merge()
+          para acumular la info que pida el enunciado.
     """
 
     def __init__(self):
-        # Contador de inversiones acumulado durante el proceso de merge sort.
+        # Contador de inversiones (podés agregar más acumuladores si querés).
         self.inv = 0
 
-    def sort(self, lista):
+    # -------------------------------------------------------
+    # INTERFAZ PÚBLICA
+    # -------------------------------------------------------
+    def sort(self, arr):
         """
-        Ordena la lista usando merge sort y, en el proceso,
-        actualiza self.inv con la cantidad de inversiones.
+        Ordena 'arr' IN-PLACE usando merge sort.
+        Devuelve la misma referencia para conveniencia.
 
-        Parámetros:
-            lista (list[int | float]): lista de valores comparables.
+        arr: lista de números (o cualquier cosa comparable con <=).
+        """
+        n = len(arr)
+        if n <= 1:
+            return arr
 
-        Retorna:
-            list: la misma lista, pero ordenada (también modificada in-place).
+        # buffer auxiliar para hacer el merge sin crear listas nuevas todo el tiempo
+        temp = [None] * n
+        self._sort(arr, temp, 0, n - 1)
+        return arr
+
+    # -------------------------------------------------------
+    # PARTE RECURSIVA (DIVIDE)
+    # -------------------------------------------------------
+    def _sort(self, arr, temp, left, right):
+        """
+        Ordena arr[left..right] y actualiza contadores (inversiones, etc.).
+        """
+        if left >= right:
+            return
+
+        mid = (left + right) // 2
+
+        # ordenar mitad izquierda y mitad derecha
+        self._sort(arr, temp, left, mid)
+        self._sort(arr, temp, mid + 1, right)
+
+        # combinar ambas mitades
+        self._merge(arr, temp, left, mid, right)
+
+    # -------------------------------------------------------
+    # PARTE DE COMBINAR (MERGE) + ZONA CUSTOM
+    # -------------------------------------------------------
+    def _merge(self, arr, temp, left, mid, right):
+        """
+        Mezcla arr[left..mid] y arr[mid+1..right] (ya ordenados)
+        en 'temp', luego copia el resultado a 'arr'.
+
+        Acá es donde:
+          - se cuentan las INVERSIONES,
+          - y donde podés agregar lógica extra para otros problemas.
         """
 
-        # Caso base: lista vacía o de un solo elemento ya está ordenada.
-        if len(lista) <= 1:
-            return lista
-        
-        # 1) DIVIDIR: se parte la lista en dos mitades.
-        mid = len(lista) // 2
-        left = lista[:mid]     # sublista izquierda
-        right = lista[mid:]    # sublista derecha
+        i = left      # puntero en mitad izquierda
+        j = mid + 1   # puntero en mitad derecha
+        k = left      # puntero en temp
+        inv_count = 0 # contador local de inversiones
 
-        # Se ordenan recursivamente ambas mitades.
-        left = self.sort(left)
-        right = self.sort(right)
-
-        # 2) COMBINAR (MERGE): se mezclarán 'left' y 'right' en 'lista',
-        # manteniendo el orden y contando inversiones.
-
-        l = 0    # índice actual en left
-        r = 0    # índice actual en right
-        idx = 0  # índice actual en la lista resultado (lista)
-
-        # Mientras haya elementos en ambas mitades por comparar:
-        while l < len(left) and r < len(right):
-            if left[l] <= right[r]:
-                # No hay inversión: el elemento de left va primero.
-                lista[idx] = left[l]
-                l += 1
+        while i <= mid and j <= right:
+            if arr[i] <= arr[j]:
+                # Caso "normal": el elemento de la izquierda va primero.
+                temp[k] = arr[i]
+                i += 1
             else:
-                # Hay inversiones:
-                #    left[l] > right[r]
-                # Como 'left' y 'right' están ordenadas,
-                # todos los elementos desde left[l] hasta left[-1]
-                # son mayores que right[r].
-                lista[idx] = right[r]
-                r += 1
+                # Caso "cruzado": arr[i] > arr[j]
+                temp[k] = arr[j]
 
-                # Cantidad de elementos restantes en left:
-                # forman inversión con right[r-1].
-                self.inv += len(left) - l
+                # ==========================
+                # ZONA CUSTOM (INVERSIONES)
+                # ==========================
+                # Como las mitades están ordenadas, si arr[i] > arr[j],
+                # entonces TODOS arr[i], arr[i+1], ..., arr[mid]
+                # son > arr[j]. Eso forma (mid - i + 1) inversiones.
+                inv_count += (mid - i + 1)
+                # Si el problema pidiera otra cosa (por ejemplo,
+                # contar pares con cierta propiedad), este es el
+                # lugar típico donde se acumulan esas cosas.
+                # ==========================
 
-            idx += 1
+                j += 1
 
-        # Copiar los elementos restantes de left (si quedaron).
-        while l < len(left):
-            lista[idx] = left[l]
-            l += 1
-            idx += 1
+            k += 1
 
-        # Copiar los elementos restantes de right (si quedaron).
-        while r < len(right):
-            lista[idx] = right[r]
-            r += 1
-            idx += 1
+        # Copiar lo que queda en la izquierda
+        while i <= mid:
+            temp[k] = arr[i]
+            i += 1
+            k += 1
 
-        # Lista ya está ordenada y se han contabilizado todas las inversiones.
-        return lista
+        # Copiar lo que queda en la derecha
+        while j <= right:
+            temp[k] = arr[j]
+            j += 1
+            k += 1
+
+        # Copiar resultado ordenado de temp a arr
+        for idx in range(left, right + 1):
+            arr[idx] = temp[idx]
+
+        # Actualizar contador global de inversiones
+        self.inv += inv_count
