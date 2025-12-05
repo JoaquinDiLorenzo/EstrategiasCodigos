@@ -49,10 +49,13 @@ def bfs(start, graph, n):
 # CÓMO USARLO:
 #   1) Construí el grafo:
 #         graph = [[] for _ in range(n)]
+#         a -= 1 , se resta 1 para acomodar indices
+#         b -= 1 
 #         graph[a].append(b)
 #         graph[b].append(a)
 #   2) Llamá:
 #         path = bfs_path(start, end, graph, n)
+#         Por lo general: path = bfs_path(0, n-1, graph, n)
 #   3) Si path es None → no hay ruta
 #      Si existe → path = lista de nodos (0-based)
 #         Para imprimir 1-based:

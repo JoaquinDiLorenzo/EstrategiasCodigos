@@ -10,7 +10,7 @@
 #   - Muchos "UNIR a b" y "PREGUNTAR si a y b están conectados".
 #   - Kruskal (Minimum Spanning Tree).
 #
-# CÓMO USARLO:
+# CÓMO USARLO: (SIEMPRE ANTES HACER a-=1 y b-=1)
 #   dsu = DSU(n)                 # inicializar con n nodos
 #   dsu.union(a, b)              # unir los conjuntos donde están a y b
 #   dsu.find(x)                  # obtener el representante del grupo

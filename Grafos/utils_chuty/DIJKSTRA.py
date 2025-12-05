@@ -18,6 +18,7 @@
 # CÓMO USAR DIJKSTRA:
 #   dist = dijkstra(0, graph, n)   # 0 = ciudad 1
 #   luego imprimir dist[i] para i=0..n-1
+#                  print(*dist)
 # ============================================================
 
 import heapq
