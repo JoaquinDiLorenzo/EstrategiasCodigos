@@ -34,28 +34,6 @@ class Primos:
             if x % p == 0:
                 return False
         return True
-    
-def prefijos(max_n):
-    es_primo = [True] * (max_n + 1)
-    if max_n >= 0:
-        es_primo[0] = False
-    if max_n >= 1:
-        es_primo[1] = False
-    lim = int(max_n**0.5) + 1
-    for i in range(2, lim):
-        if es_primo[i]:
-            step = i
-            start = i * i
-            for j in range(start, max_n + 1, step):
-                es_primo[j] = False
-
-    prefix = [0] * (max_n + 1)
-    cnt = 0
-    for i in range(max_n + 1):
-        if es_primo[i]:
-            cnt += 1
-        prefix[i] = cnt
-    return prefix
 
 q = int(sys.stdin.readline())
 
@@ -63,16 +41,9 @@ values = []
 max_r = 0
 
 for _ in range(q):
-    l, r = map(int, sys.stdin.readline().split())
-    values.append((l, r))
-    if r > max_r:
-        max_r = r
+  l, r = map(int, sys.stdin.readline().split())
+  values.append((l, r))
 
-prefix = prefijos(max_r)
-
-out_lines = []
 for l, r in values:
-    left = prefix[l-1] if l-1 >= 0 else 0
-    out_lines.append(str(prefix[r] - left))
-
-sys.stdout.write("\n".join(out_lines))
+  p = Primos(l, r)
+  sys.stdout.write(f"{len(p.lista_primos)}")
