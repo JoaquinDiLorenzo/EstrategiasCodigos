@@ -1,0 +1,288 @@
+1. 🧊 GRAFOS — ¿Cuándo es un problema de grafos?
+
+Se trata de grafos si el enunciado menciona:
+	•	nodos / ciudades / computadoras
+	•	conexiones / rutas / caminos
+	•	aristas dirigidas o no dirigidas
+	•	costos / distancias
+	•	“llegar”, “conectar”, “mínimo costo”, “componentes”, etc.
+
+⸻
+
+1.1 CAMINO MÍNIMO SIN PESOS → BFS
+
+Usá esto cuando:
+	•	El grafo NO tiene pesos o todos los pesos = 1.
+	•	Piden mínima cantidad de pasos/aristas.
+
+Plantilla: BFS
+	•	Grafos/utils/BFS.py
+	•	Ejemplo completo: Grafos/chuty/A1.py
+
+⸻
+
+1.2 CAMINO MÍNIMO CON PESOS POSITIVOS → Dijkstra
+
+Usá esto cuando:
+	•	Hay pesos positivos.
+	•	Piden “menor distancia”, “costo mínimo para ir de A a B”.
+
+Plantilla: Dijkstra con heap
+	•	Grafos/utils/DIJKSTRA.py
+	•	Ejemplo completo: Grafos/chuty/A4.py
+
+⸻
+
+1.3 MÍNIMO COSTO PARA CONECTAR TODO → MST (Kruskal)
+
+Usá esto cuando:
+	•	Piden un árbol de expansión mínima.
+	•	O dice: “Costo mínimo para unir todos los nodos”.
+	•	O “si no se puede conectar todo, imprimir IMPOSSIBLE”.
+
+Plantilla: Kruskal + DSU
+	•	Grafos/utils/DSU.py
+	•	Grafos/utils/KRUSKAL.py
+	•	Ejemplo: Grafos/chuty/A5.py
+
+⸻
+
+1.4 COMPONENTES CONECTADAS / UNIONES → DSU
+
+Usá esto cuando:
+	•	Agregan aristas de a una y preguntan cuántas componentes quedan.
+	•	Quieren el tamaño de la componente más grande.
+	•	No hay pesos ni caminos mínimos.
+	•	Se quiere conectar todo sin peso.
+
+
+Plantilla: DSU (Union-Find)
+	•	Grafos/utils/DSU.py
+	•	Ejemplo: Grafos/chuty/A2.py
+
+⸻
+
+2. 🧠 PROGRAMACIÓN DINÁMICA — ¿Cómo detectarla?
+
+Es DP cuando:
+	•	El problema involucra hacer algo de muchas formas.
+	•	Piden mínimo / máximo con decisiones repetidas.
+	•	Hay que llenar algo de tamaño N basándose en estados previos.
+	•	Las restricciones permiten O(N), O(N·M) o N·W.
+
+⸻
+
+2.1 Formas de llegar a X / combinaciones / secuencias
+
+Patrones típicos del enunciado:
+	•	“¿Cuántas maneras de escribir X como suma de…?”
+	•	“¿Cuántas formas hay de llegar a la posición N?”
+	•	“Formas de sumar monedas, dados, pasos…”
+
+Plantillas:
+
+Problema	Orden importa	Archivo
+Dice combinations	sí	Dinamica/practicas/a2.py
+Coin change (formas, orden importa)	sí	a4.py
+Coin change (formas, orden NO importa)	no	a5.py
+
+
+⸻
+
+2.1 Conteo de formas (DP de combinatoria)
+
+Patrones típicos:
+	•	“¿Cuántas formas hay de sumar X con estos movimientos?”
+	•	“¿Cuántas secuencias válidas existen?”
+	•	“¿Cuántos caminos hay para llegar a X?”
+	•	“Para cada valor x, dp[x] es cantidad de formas de formarlo”
+
+Ejemplos:
+	•	Dice Combinations
+	•	Coin Combinations I
+	•	Coin Combinations II
+
+Plantillas:
+	•	Dinamica/practicas/a2.py (dice)
+	•	Dinamica/practicas/a4.py (combinaciones — orden SI importa - PERMUTACIONES VALIDAS)
+	•	Dinamica/practicas/a5.py (combinaciones — orden NO importa - SIN PERMUTACIONES)
+
+⸻
+
+2.2 Mínimo costo / mínimo número de pasos
+
+Patrones:
+	•	“mínimo número de monedas para llegar a X”
+	•	“minimizar el costo total”
+	•	“dp[x] = mejor respuesta para llegar a x”
+
+Ejemplos:
+	•	Minimizing Coins
+	•	Shortest Edit / Weighted DP simple
+
+Plantillas:
+	•	Dinamica/practicas/a3.py (min coins)
+
+⸻
+
+2.3 DP sobre dígitos / autómatas (muy frecuente)
+
+Patrones:
+	•	“números válidos con restricciones entre dígitos”
+	•	“si el dígito anterior es X, solo puedo poner Y…”
+	•	“cuántos números de longitud N cumplen una regla”
+	•	se usa tabla: dp[pos][último_dígito]
+
+Ejemplos:
+	•	Números facheros (A1 del PDF)
+	•	Otros problemas de cadenas de dígitos con restricciones
+
+Plantillas:
+	•	Dinamica/practicas/a1.py (Facheros)
+
+⸻
+
+2.4 DP sobre dos strings: subsecuencia / similaridad
+
+Patrones:
+	•	“subsecuencia común más larga” (LCS)
+	•	“coincidencias entre string A y B”
+	•	“modificar string A para que se parezca a B”
+	•	DP de dos dimensiones: dp[i][j]
+
+Ejemplos:
+	•	Longest Common Subsequence (A7)
+
+Plantillas:
+	•	Dinamica/practicas/a7.py (LCS + reconstrucción)
+
+⸻
+
+2.5 Subproblemas sobre índices: LIS (Long-Increasing-Subsequence)
+
+Patrones:
+	•	“subsecuencia creciente más larga”
+	•	dp[i] = mejor subsecuencia que termina en i
+	•	O(n²) es suficiente para el parcial
+
+Ejemplos:
+	•	LIS easy (A6)
+
+Plantillas:
+	•	Dinamica/practicas/a6.py (LIS O(n²))
+
+⸻
+
+2.6 Mochila 0/1 — maximizar valor con peso limitado
+
+Patrones:
+	•	tener N items con peso/valor
+	•	peso ≤ W
+	•	elegir subconjunto óptimo
+	•	dp[w] = mejor valor con peso w
+
+Ejemplos:
+	•	Knapsack 0/1 (A8)
+
+Plantillas:
+	•	Dinamica/practicas/a8.py
+
+⸻
+
+3. 🔍 BINARY SEARCH (BS) — ¿Cuándo usarlo?
+
+Es el algoritmo más evaluado del parcial.
+
+Usalo cuando el enunciado sugiere:
+	•	“minimizar el máximo”
+	•	“tiempo mínimo necesario para…”
+	•	“capacidad mínima que permite…”
+	•	“es posible dividir X en Y partes cumpliendo…”
+	•	“la respuesta es un número entre low y high”
+
+Patrón: Binary Search sobre la respuesta
+	•	definís low, high
+	•	implementás check(mid) → True/False
+	•	buscás el mínimo (o máximo) mid válido.
+
+Plantillas:
+	•	DivideConquer-BinarySearch/utils/binary_search.py
+	•	DivideConquer-BinarySearch/utils/check.py
+	•	Ejemplos completos:
+	•	baltu/a2.py (particionar arreglo en K segmentos)
+	•	baltu/a3.py (“factory machines”: tiempo mínimo)
+
+⸻
+
+4. 🔢 TEORÍA DE NÚMEROS — ¿Cuándo aparece?
+
+Usar cuando el enunciado pida:
+	•	“calcular a^b mod m con b muy grande”
+	•	“primos en un rango”, “siguiente primo”
+	•	“cantidad de divisores”, “factorizar”
+
+Plantillas:
+
+Problema	Archivo
+Exponenciación modular	TeoriaNumeros/utils/modular_exp_iter.py
+Criba de primos	TeoriaNumeros/chuty/A2.py
+Contar divisores	TeoriaNumeros/utils/contar_divisores.py
+Variantes de primalidad	TeoriaNumeros/chuty/A1.py, A4.py
+
+
+⸻
+
+5. 📐 GEOMETRÍA — ¿Cuándo aparece?
+
+Lo detectás si el enunciado menciona:
+	•	puntos (x,y)
+	•	polígonos
+	•	área
+	•	convexidad
+	•	intersección de segmentos
+
+Plantillas:
+
+Problema	Archivo
+Área de polígono (shoelace)	Geometria/chuty/A2.py
+Convexidad	Geometria/chuty/A3.py
+Intersección de segmentos	Geometria/utils/INTERSECCION.py
+Distancias / vectores	Geometria/utils/PUNTO.py
+
+
+⸻
+
+6. 📝 CHECKLIST DE 10 SEGUNDOS POR PROBLEMA
+
+Pegalo arriba del archivo:
+
+1. ¿Es grafo?
+   - conexiones, ciudades, rutas → BFS/Dijkstra/MST/DSU
+
+2. ¿Es DP?
+   - contar formas o mínimo costo → dp[...]
+
+3. ¿Es BS sobre respuesta?
+   - “mínimo X tal que se puede” → binary_search + check
+
+4. ¿Es teoría de números?
+   - potencias, primos, divisores
+
+5. ¿Es geometría?
+   - puntos, área, convexidad, segmentos
+
+6. Una vez identificado:
+   - Ir a carpeta del tema
+   - Abrir utils + ejemplo A?.py
+   - Copiar plantilla y adaptar
+
+
+⸻
+
+7. 💡 REGLA DE ORO DEL PARCIAL
+
+No programes desde cero.
+Siempre adaptá algo que ya está en tu repositorio.
+
+Si el patrón está bien identificado, el código sale rápido.
+El parcial se aprueba identificando bien qué algoritmo aplicar y adaptando plantillas.
