@@ -206,6 +206,9 @@ def contar_divisores(x):
     return total
 
 
+# ====================================================
+
+
 '''
 Funcion para obtener el sigueinte primo
 '''
@@ -217,3 +220,42 @@ def proximo_primo(num):
 
 # Como no podemos hacer la criba de 10 ^ 12, lo que hacemos es hacerla de 10 ^ 6 (aplicandole raiz cuadrada a 12)
 # El codigo funciona igual por la siguiente regla matematica -> Si ningún primo hasta Sqrt(x) divide a X, entonces forzosamente X es primo.
+
+
+# ====================================================
+
+
+def contar_primos_distintos_factorizacion(x: int) -> int:
+    """
+    Devuelve la cantidad de factores primos *distintos* de x.
+    Ejemplo: x = 60 = 2^2 * 3 * 5  -> retorna 3 (porque los primos distintos son 2, 3 y 5).
+    Esta función funciona bien incluso si x llega hasta ~10^12,
+    siempre que 'prim' tenga todos los primos hasta sqrt(x) (por eso usamos MAX = 10^6).
+    """
+    cnt = 0          # contador de primos distintos
+    tmp = x          # copia de x que vamos a ir dividiendo
+
+    # Recorremos los primos precomputados
+    for p in prim.lista_primos:
+        # Si p^2 > tmp, ya no hace falta seguir:
+        # Si quedara algún divisor primo de tmp, tendría que ser <= sqrt(tmp).
+        # Si p^2 > tmp, significa que no hay más divisores pequeños.
+        if p * p > tmp:
+            break
+
+        # Si p divide a tmp, entonces p es un factor primo de x
+        if tmp % p == 0:
+            cnt += 1          # contamos este primo una sola vez
+
+            # Dividimos tmp por p hasta eliminar por completo todas las apariciones de p
+            # (así no lo contamos más de una vez)
+            while tmp % p == 0:
+                tmp /= p
+
+    # Al terminar el bucle:
+    # Si tmp > 1, significa que lo que quedó en tmp es un primo > 1 (un "primo grande"),
+    # porque ya le sacamos todos los factores primos pequeños (<= sqrt(x)).
+    if tmp > 1:
+        cnt += 1
+
+    return cnt
