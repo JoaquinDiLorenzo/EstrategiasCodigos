@@ -1,4 +1,5 @@
 import sys
+import bisect
 
 class Primos:
     def __init__(self, n):
@@ -38,12 +39,17 @@ class Primos:
 q = int(sys.stdin.readline())
 
 values = []
-max_r = 0
+max_r = -1
 
 for _ in range(q):
   l, r = map(int, sys.stdin.readline().split())
   values.append((l, r))
+  if r > max_r:
+    max_r = r
+
+p = Primos(max_r) # una sola vez
 
 for l, r in values:
-  p = Primos(l, r)
-  sys.stdout.write(f"{len(p.lista_primos)}")
+  left = bisect.bisect_left(p.lista_primos, l)
+  right = bisect.bisect_right(p.lista_primos, r)
+  sys.stdout.write(f"{right - left}\n")
