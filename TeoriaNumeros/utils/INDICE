@@ -1,0 +1,66 @@
+###############################################################
+# TEORÍA DE NÚMEROS — ÍNDICE Y GUÍA RÁPIDA
+###############################################################
+
+# 1. POTENCIACIÓN RÁPIDA (binary exponentiation)
+#    → Usar cuando piden: 
+#         • "calcular a^b mod M"
+#         • "exponentes enormes"
+#         • "potencias en combinatoria"
+#
+#    Plantilla: modular_exp_iter(a, b)   (O(log b))
+#    Ubicación: utils → modular_exp_iter
+
+# -------------------------------------------------------------
+
+# 2. CANTIDAD DE DIVISORES (prime factorization)
+#    → Usar cuando piden:
+#         • "cuántos divisores tiene x"
+#         • "factorizar muchos números x ≤ 10^6"
+#
+#    Se usa:
+#         prim = Primos(MAX)     # criba + min_primo[]
+#         contar_divisores(x)    # O(log x)
+#
+#    Plantilla: contar_divisores(x)
+#    Ubicación: utils → clase Primos + contar_divisores
+
+# -------------------------------------------------------------
+
+# 3. BINOMIAL COEFFICIENTS (C(n,k) mod MOD)
+#    → Usar cuando piden:
+#         • "calcular muchos C(a,b)"
+#         • límites a,b ≤ 1000 o similares
+#
+#    Método de Pascal: 
+#         bc[n][m] = bc[n-1][m-1] + bc[n-1][m]
+#
+#    Plantilla: binomial_coefficient(n, m)
+#    Ubicación: utils → binomial_coefficient
+
+# -------------------------------------------------------------
+
+# 4. NÚMERO PRIMO SIGUIENTE (next prime > n)
+#    → Usar cuando piden:
+#         • "buscar el siguiente primo después de n"
+#         • n ≤ 10^12 (muy grande)
+#
+#    Se hace:
+#         • construir Primos(MAX) con MAX ≈ 10^6
+#         • test_primalidad(n) y avanzar hasta encontrar uno
+#
+#    Plantilla en el código:
+#         while True:
+#             n += 1
+#             if prim.test_primalidad(n):
+#                 print(n); break
+
+# -------------------------------------------------------------
+# RESUMEN DE CUÁNDO USAR QUÉ
+#
+#  (A1) a^b mod M      → modular_exp_iter
+#  (A2) divisores(x)   → contar_divisores + criba
+#  (A3) C(a,b) mod M   → binomial_coefficient
+#  (A4) next prime     → Primos.test_primalidad
+#
+###############################################################

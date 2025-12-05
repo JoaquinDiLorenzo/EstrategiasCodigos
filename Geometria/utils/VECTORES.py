@@ -23,6 +23,26 @@
 #   b = Punto(4, 0)
 #   c = Punto(2, 3)
 #   print(orient(a, b, c))  # >0 => forma giro antihorario
+# -------
+# dist2(a, b):
+#   - Calcula la distancia **al cuadrado**.
+#   - NO usa raíz cuadrada → es más rápido y exacto.
+#   - Ideal para:
+#       * comparar distancias
+#       * encontrar mínimos
+#       * evitar errores de floating point
+#   - Usar SIEMPRE durante el cálculo.
+#
+# dist(a, b):
+#   - Calcula la distancia real (euclidiana).
+#   - Usa sqrt → más lento y con error numérico.
+#   - Usar SOLO cuando el problema pide:
+#       * imprimir la distancia real
+#       * precisión con error permitido (ej: 1e-6)
+#
+# Regla general:
+#   - Computar todo con dist2.
+#   - Al final, si la salida lo exige, imprimir sqrt(dist2_min).
 # ============================================================
 
 from .punto import Punto, EPS

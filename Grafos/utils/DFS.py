@@ -22,18 +22,18 @@
 #         dfs(start, graph, visited)
 # ===================================================================
 
-def dfs(v, graph, visited):
-    visited[v] = True
-    for to in graph[v]:
-        if not visited[to]:
-            dfs(to, graph, visited)
+def dfs(node, graph, visited):
+    visited[node] = True
+    for neighbor in graph[node]:
+        if not visited[neighbor]:
+            dfs(neighbor, graph, visited)
 
 
-# Variante: DFS que devuelve tamaño de la componente de v
-def dfs_count(v, graph, visited):
-    visited[v] = True
-    total = 1
-    for to in graph[v]:
-        if not visited[to]:
-            total += dfs_count(to, graph, visited)
-    return total
+# Variante: DFS que devuelve tamaño de la componente de node
+def dfs_count(node, graph, visited):
+    visited[node] = True
+    total_nodes = 1
+    for neighbor in graph[node]:
+        if not visited[neighbor]:
+            total_nodes += dfs_count(neighbor, graph, visited)
+    return total_nodes

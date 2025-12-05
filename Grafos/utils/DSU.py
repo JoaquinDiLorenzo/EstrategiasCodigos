@@ -11,31 +11,38 @@
 #   - Kruskal (Minimum Spanning Tree).
 #
 # CÓMO USARLO:
-#   dsu = DSU(n)                 # inicializar con n nodos
-#   dsu.union(a, b)              # unir los conjuntos donde están a y b
-#   dsu.find(x)                  # obtener el representante del grupo
-#   dsu.find(a) == dsu.find(b)   # True si están en el mismo grupo
-#   dsu.size(x)                  # tamaño del grupo de x
+#   dsu = DSU(n)                   # inicializar con n nodos (0..n-1)
+#   dsu.union(a, b)                # unir los conjuntos donde están a y b
+#   dsu.find(x)                    # obtener el representante del grupo
+#   dsu.find(a) == dsu.find(b)     # True si están en el mismo grupo
+#   dsu.size(x)                    # tamaño del grupo de x
 # ================================================================
 
 class DSU:
     def __init__(self, n):
         self.parent = list(range(n))
-        self.sz = [1] * n
+        self.size_array = [1] * n
 
     def find(self, x):
+        # encuentra el representante del conjunto de x
         if self.parent[x] != x:
             self.parent[x] = self.find(self.parent[x])  # path compression
         return self.parent[x]
 
     def union(self, a, b):
-        a = self.find(a)
-        b = self.find(b)
-        if a != b:
-            if self.sz[a] < self.sz[b]:
-                a, b = b, a
-            self.parent[b] = a
-            self.sz[a] += self.sz[b]
+        # une los conjuntos de a y b, devuelve True si se unieron
+        root_a = self.find(a)
+        root_b = self.find(b)
+        if root_a == root_b:
+            return False  # ya estaban unidos
+
+        # unión por tamaño
+        if self.size_array[root_a] < self.size_array[root_b]:
+            root_a, root_b = root_b, root_a
+
+        self.parent[root_b] = root_a
+        self.size_array[root_a] += self.size_array[root_b]
+        return True
 
     def size(self, x):
-        return self.sz[self.find(x)]
+        return self.size_array[self.find(x)]

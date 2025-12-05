@@ -1,33 +1,4 @@
 # ============================================================
-# DSU (Disjoint Set Union) / Union-Find
-# Sirve para:
-#   - Manejar componentes que se van uniendo.
-#   - Saber si dos nodos están en el mismo conjunto.
-#   - Lo usamos en Kruskal para evitar ciclos.
-# ============================================================
-
-class DSU:
-    def __init__(self, n):
-        self.parent = list(range(n))
-        self.sz = [1] * n
-
-    def find(self, x):
-        if self.parent[x] != x:
-            self.parent[x] = self.find(self.parent[x])  # path compression
-        return self.parent[x]
-
-    def union(self, a, b):
-        a = self.find(a)
-        b = self.find(b)
-        if a != b:
-            if self.sz[a] < self.sz[b]:
-                a, b = b, a
-            self.parent[b] = a
-            self.sz[a] += self.sz[b]
-            return True   # se unieron dos componentes distintas
-        return False       # ya estaban en el mismo conjunto
-
-# ============================================================
 # KRUSKAL: Árbol de expansión mínima (MST)
 #
 # PARA QUÉ SIRVE:
@@ -35,8 +6,14 @@ class DSU:
 #     de un grafo NO DIRIGIDO con pesos.
 #
 # CÓMO SE USA:
-#   1) Tener una lista de aristas: edges = [(costo, u, v), ...]
-#      * u y v en 0-based (0..n-1)
+#   1) Tener una lista de aristas: 
+    #     edges = []
+    # for _ in range(m):
+    #     a, b, c = map(int, input().split())
+    #     a -= 1   # pasar a 0-based
+    #     b -= 1
+    #     edges.append((c,a,b)) -> VA EL PESO PRIMERO
+
 #   2) Llamar:
 #         total_cost, used_edges = kruskal(n, edges)
 #   3) Si used_edges != n-1 -> grafo no conectable -> "IMPOSSIBLE"

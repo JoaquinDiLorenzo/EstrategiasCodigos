@@ -1,3 +1,4 @@
+
 # ===================================================================
 # BFS (Breadth-First Search)
 #
@@ -14,33 +15,34 @@
 #         graph = [[] for _ in range(n)]
 #         graph[a].append(b)
 #         graph[b].append(a)
+#      (usar 0-based: 0..n-1)
 #   2) Llamá:
 #         dist = bfs(start, graph, n)
 #   3) dist[v] = distancia mínima desde start a v
 # ===================================================================
 
-from collections import deque
+def bfs(start_node, graph, node_count):
+    distance = [-1] * node_count
+    distance[start_node] = 0
+    queue = deque([start_node])
 
-def bfs(start, graph, n):
-    dist = [-1] * n
-    dist[start] = 0
-    q = deque([start])
+    while queue:
+        current = queue.popleft()
+        for neighbor in graph[current]:
+            if distance[neighbor] == -1:      # no visitado aún
+                distance[neighbor] = distance[current] + 1
+                queue.append(neighbor)
 
-    while q:
-        v = q.popleft()
-        for to in graph[v]:
-            if dist[to] == -1:      # no visitado aún
-                dist[to] = dist[v] + 1
-                q.append(to)
+    return distance
 
-    return dist
 
 # ===================================================================
 # BFS + reconstrucción del CAMINO MÍNIMO
 #
 # PARA QUÉ SIRVE:
 #   - Encontrar el camino MÍNIMO entre start y end.
-#   - Útil en "Message Route" o cualquier ejercicio de ruta mínima.
+#   - Útil en "Message Route" o cualquier ejercicio de ruta mínima
+#     que pida imprimir el camino.
 #
 # CUÁNDO USARLO:
 #   - Grafos SIN peso.
@@ -59,32 +61,30 @@ def bfs(start, graph, n):
 #             print(*[x+1 for x in path])
 # ===================================================================
 
-from collections import deque
+def bfs_path(start_node, end_node, graph, node_count):
+    distance = [-1] * node_count
+    parent = [-1] * node_count
+    distance[start_node] = 0
 
-def bfs_path(start, end, graph, n):
-    dist = [-1] * n
-    parent = [-1] * n
-    dist[start] = 0
+    queue = deque([start_node])
 
-    q = deque([start])
+    while queue:
+        current = queue.popleft()
+        for neighbor in graph[current]:
+            if distance[neighbor] == -1:      # no visitado aún
+                distance[neighbor] = distance[current] + 1
+                parent[neighbor] = current
+                queue.append(neighbor)
 
-    while q:
-        v = q.popleft()
-        for to in graph[v]:
-            if dist[to] == -1:      # no visitado aún
-                dist[to] = dist[v] + 1
-                parent[to] = v
-                q.append(to)
-
-    if dist[end] == -1:
+    if distance[end_node] == -1:
         return None
 
-    # reconstrucción del camino: end → start usando parent[]
+    # reconstrucción del camino: end_node → start_node usando parent[]
     path = []
-    cur = end
-    while cur != -1:
-        path.append(cur)
-        cur = parent[cur]
+    node = end_node
+    while node != -1:
+        path.append(node)
+        node = parent[node]
 
     path.reverse()
     return path
