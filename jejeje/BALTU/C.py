@@ -35,48 +35,44 @@ class Primos:
                 return False
         return True
     
-def sieve_prefix(max_n):
-    is_prime = [True] * (max_n + 1)
+def prefijos(max_n):
+    es_primo = [True] * (max_n + 1)
     if max_n >= 0:
-        is_prime[0] = False
+        es_primo[0] = False
     if max_n >= 1:
-        is_prime[1] = False
+        es_primo[1] = False
     lim = int(max_n**0.5) + 1
     for i in range(2, lim):
-        if is_prime[i]:
+        if es_primo[i]:
             step = i
             start = i * i
             for j in range(start, max_n + 1, step):
-                is_prime[j] = False
+                es_primo[j] = False
+
     prefix = [0] * (max_n + 1)
     cnt = 0
     for i in range(max_n + 1):
-        if is_prime[i]:
+        if es_primo[i]:
             cnt += 1
         prefix[i] = cnt
     return prefix
 
-data = sys.stdin.read().strip().split()
-if not data:
-    sys.exit(0)
-it = iter(data)
-q = int(next(it))
-queries = []
-max_r = 0
-for _ in range(q):
-    l = int(next(it)); r = int(next(it))
-    queries.append((l, r))
-    if r > max_r:
-        max_r = r
-    
 q = int(sys.stdin.readline())
 
 values = []
+max_r = 0
 
 for _ in range(q):
-  l, r = map(int, sys.stdin.readline().split())
-  values.append((l, r))
+    l, r = map(int, sys.stdin.readline().split())
+    values.append((l, r))
+    if r > max_r:
+        max_r = r
 
+prefix = prefijos(max_r)
+
+out_lines = []
 for l, r in values:
-    p = Primos(r)
-    sys.stdout.write(f"{len(p.lista_primos)}")
+    left = prefix[l-1] if l-1 >= 0 else 0
+    out_lines.append(str(prefix[r] - left))
+
+sys.stdout.write("\n".join(out_lines))

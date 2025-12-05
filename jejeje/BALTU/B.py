@@ -3,33 +3,39 @@ import sys
 n = int(sys.stdin.readline())
 
 values = list(map(int, sys.stdin.readline().split()))
-values = values[:n]
-dp = [1] * n
 
-if n == 0:
-    sys.stdout.write("0")
-    sys.exit(0)
+if n == 0: # caso base
+  sys.stdout.write("0")
+  sys.exit(0)
 
 MAX = max(values)
 dp = [0] * (MAX + 1)
-ans = 0
+res = 0
 
-for x in values:
-    cur_best = 0
-    d = 1
-    while d * d <= x:
-        if x % d == 0:
-            if best[d] > cur_best:
-                cur_best = best[d]
-            od = x // d
-            if best[od] > cur_best:
-                cur_best = best[od]
-        d += 1
-    cur = cur_best + 1
-    if cur > best[x]:
-        best[x] = cur
-    if cur > ans:
-        ans = cur
+for value in values:
+    mej = 0
+    mult = 1
 
-sys.stdout.write(str(ans))
-# ...existing code...
+    while mult * mult <= value:
+      if value % mult == 0:
+        # si mult es divisor del valor en que se esta
+        if dp[mult] > mej:
+          mej = dp[mult]
+
+        # divisor extra
+        div = value // mult
+
+        if dp[div] > mej:
+          mej = dp[div]
+                
+      mult += 1
+
+    cand = mej + 1
+
+    # actualizacion
+    if cand > dp[value]:
+        dp[value] = cand
+    if cand > res:
+        res = cand
+
+sys.stdout.write(f"{res}")
