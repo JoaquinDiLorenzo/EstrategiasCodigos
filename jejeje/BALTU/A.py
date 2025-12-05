@@ -35,35 +35,40 @@ for _ in range(n):
   coords.append(Punto(x, y))
 
 INF = float("inf")
-used = [False] * n
-min_sq = [INF] * n
-min_sq[0] = 0
+listo = [False] * n
+min_n = [INF] * n
+min_n[0] = 0
 
-max_edge_sq = 0
+max_n = 0
 
-if n <= 1:
-    print("0.0000000000")
-    sys.exit(0)
+if n <= 1: # si hay una sola antena no hay interconexion
+  print("0.0000000000")
+  sys.exit(0)
 
 for _ in range(n):
-    u = -1
-    best = INF
-    for i in range(n):
-        if not used[i] and min_sq[i] < best:
-            best = min_sq[i]
-            u = i
-    used[u] = True
-    if best > max_edge_sq:
-        max_edge_sq = best
-    ux = coords[u].x
-    uy = coords[u].y
-    for v in range(n):
-        if not used[v]:
-            dx = ux - coords[v].x
-            dy = uy - coords[v].y
-            d2 = dx*dx + dy*dy
-            if d2 < min_sq[v]:
-                min_sq[v] = d2
+  u = -1
+  mej = INF
+  for i in range(n):
+    if not listo[i] and min_n[i] < mej:
+      mej = min_n[i]
+      u = i
+      
+  listo[u] = True
+  if mej > max_n:
+    max_n = mej
 
-res = math.sqrt(max_edge_sq)
+  ux = coords[u].x
+  uy = coords[u].y
+
+  for v in range(n):
+    if not listo[v]:
+      dx = ux - coords[v].x
+      dy = uy - coords[v].y
+
+      d2 = dx*dx + dy*dy
+
+      if d2 < min_n[v]:
+        min_n[v] = d2
+
+res = math.sqrt(max_n)
 sys.stdout.write(f"{res:.10f}")
